@@ -1,6 +1,3 @@
-rootProject.name = "FmwkExample"
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
 pluginManagement {
     repositories {
         google {
@@ -26,7 +23,11 @@ dependencyResolutionManagement {
         }
         mavenCentral()
     }
-}
 
-include(":backend")
-include(":composeApp")
+    // custom plugins can add dependencies, which should match those included directly
+    versionCatalogs {
+        create("libs") {
+            from(files("../libs.versions.toml"))
+        }
+    }
+}

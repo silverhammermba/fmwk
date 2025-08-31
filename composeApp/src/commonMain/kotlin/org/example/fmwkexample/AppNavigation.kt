@@ -3,6 +3,7 @@ package org.example.fmwkexample
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -111,6 +112,7 @@ fun AppNavigation(
         ) {
             composable<Route.Empty> {
                 TopBar(null)
+                Text("Loading...")
             }
 
             composable<Route.Fizzbuzz> { entry ->

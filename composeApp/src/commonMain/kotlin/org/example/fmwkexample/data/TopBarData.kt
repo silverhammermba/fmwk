@@ -22,5 +22,5 @@ fun <M, N> topBarData(title: Attr<String, M, AttrData<String, M>>, back: Attr<Un
 
 @Composable
 fun topBarData(model: Foobar): TopBarData {
-    return topBarData<Unit, Unit>(model.title, null)
+    return topBarData(model.title, model.back)
 }

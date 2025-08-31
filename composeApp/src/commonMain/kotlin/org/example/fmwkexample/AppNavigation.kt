@@ -56,26 +56,17 @@ fun AppNavigation(
         }
     }
 
-    var lastPath by remember { mutableStateOf(Path(listOf())) }
-    if (path.path != lastPath.path) {
-        var diffIndex = 0
-        while (path.path.size > diffIndex && lastPath.path.size > diffIndex && path.path[diffIndex] == lastPath.path[diffIndex]) {
-            diffIndex += 1
-        }
-        (0 until (lastPath.path.size - diffIndex)).forEach { _ ->
-            navController.popBackStack()
-        }
-        (diffIndex until path.path.size).forEach { idx ->
-            navController.navigate(path.path[idx])
-        }
+    SyncNavPath(path, navController)
 
-        lastPath = path
-    }
+    // this uses Dialogue, which should hijack back handling
+    // but that doesn't work on iOS, so we have to manually hook that up later
+    Alert(alert)
 
-    alert?.let {
-        Alert(it)
-    }
-
+    /**
+     * Set up a back handler unless an alert is currently shown, in which case defer to the alert.
+     *
+     * Each route can call this if they want custom back behavior on that screen.
+     */
     @Composable
     fun AlertBackHandler(onBack: () -> Unit) {
         val shownAlert = alert
@@ -90,6 +81,9 @@ fun AppNavigation(
 
     val topBarState = remember { mutableStateOf<TopBarData?>(null) }
 
+    /**
+     * Each route in the nav graph builder **must** call this to not get a stale top bar and to override the incorrect default back handler.
+     */
     @Composable
     fun TopBar(value: TopBarData?) {
         topBarState.value = value
@@ -115,6 +109,8 @@ fun AppNavigation(
                 Text("Loading...")
             }
 
+            // list of each route and which composable each uses for its model
+
             composable<Route.Fizzbuzz> { entry ->
                 val route: Route.Fizzbuzz = entry.toRoute()
                 val model = viewModel.getModel(route) ?: return@composable
@@ -129,6 +125,30 @@ fun AppNavigation(
                 )
             }
         }
+    }
+}
+
+/**
+ * Check if [path] has changed between compositions and push/pop with [navController] to sync the back stack with it.
+ */
+@Composable
+fun SyncNavPath(path: Path, navController: NavHostController) {
+    var lastPath by remember { mutableStateOf(Path(listOf())) }
+    if (path.path != lastPath.path) {
+        var diffIndex = 0
+        while (path.path.size > diffIndex && lastPath.path.size > diffIndex && path.path[diffIndex] == lastPath.path[diffIndex]) {
+            diffIndex += 1
+        }
+        (0 until (lastPath.path.size - diffIndex)).forEach { _ ->
+            navController.popBackStack()
+        }
+        (diffIndex until path.path.size).forEach { idx ->
+            navController.navigate(path.path[idx])
+        }
+
+        // IDE says this isn't used, but it's remembered between compositions!
+        // removing this means we would have to fully reconstruct the nav stack every time
+        lastPath = path
     }
 }
 

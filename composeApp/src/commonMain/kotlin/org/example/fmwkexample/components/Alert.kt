@@ -19,9 +19,10 @@ import org.example.backend.alert.AlertData
 
 @Composable
 fun Alert(
-    alert: AlertData,
+    alert: AlertData?,
     modifier: Modifier = Modifier
 ) {
+    if (alert == null) return
     Alert(
         title = alert.title,
         body = alert.body,

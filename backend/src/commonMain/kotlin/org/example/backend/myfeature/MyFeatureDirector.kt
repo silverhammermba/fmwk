@@ -44,7 +44,7 @@ internal class MyFeatureDirector(
         val alert = AlertData(
             "Hello!",
             "This is an alert.",
-            AlertChoice("Nice") { router.hideAlert() },
+            positive = AlertChoice("Nice") { router.hideAlert() },
         )
         router.showAlert(alert)
     }

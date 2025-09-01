@@ -36,9 +36,7 @@ import org.example.fmwkexample.data.topBarData
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppNavigation(
-    viewModel: AppViewModel = viewModel {
-        AppViewModel(Router())
-    },
+    viewModel: AppViewModel = viewModel { AppViewModel(Router()) },
     navController: NavHostController = rememberNavController()
 ) {
     LaunchedEffect(Unit) {
@@ -49,11 +47,7 @@ fun AppNavigation(
     val alert by viewModel.alert.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                is EventData.SendText -> sendText(event.title, event.subject, event.text)
-            }
-        }
+        viewModel.events.collect(::routeEvent)
     }
 
     SyncNavPath(path, navController)
@@ -150,23 +144,4 @@ fun SyncNavPath(path: Path, navController: NavHostController) {
         // removing this means we would have to fully reconstruct the nav stack every time
         lastPath = path
     }
-}
-
-fun sendText(
-    title: String,
-    subject: String,
-    text: String
-) {
-    // TODO: fix share activity
-//    val intent = Intent(Intent.ACTION_SEND).apply {
-//        type = "text/plain"
-//        putExtra(Intent.EXTRA_SUBJECT, subject)
-//        putExtra(Intent.EXTRA_TEXT, text)
-//    }
-//    context.startActivity(
-//        Intent.createChooser(
-//            intent,
-//            title
-//        )
-//    )
 }

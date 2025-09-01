@@ -7,6 +7,7 @@ package org.example.backend.event
  * The back-end cannot "undo" an event, unlike popping a route or hiding an alert.
  */
 sealed interface EventData {
+    /** Share text with another app */
     data class SendText(
         val title: String,
         val subject: String,

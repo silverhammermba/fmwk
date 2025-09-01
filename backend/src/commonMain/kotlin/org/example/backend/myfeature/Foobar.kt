@@ -15,6 +15,7 @@ class Foobar internal constructor(
     alert: () -> Unit,
     back: (() -> Unit)?,
     push: () -> Unit,
+    share: () -> Unit,
 ) {
     val title = Attr(AttrData("Hello, world!", RWX.R))
 
@@ -34,15 +35,16 @@ class Foobar internal constructor(
                 alert()
             } else if (it == 1) {
                 push()
+            } else if (it == 2) {
+                share()
             }
         }
     )
 
     init {
         coroutineScope.launch {
-            delay(1.seconds)
             options.data = options.data.copy(
-                list = listOf("Alert", "Push"),
+                list = listOf("Alert", "Push", "Share"),
                 mode = RWX.RW
             )
             delay(1.seconds)
